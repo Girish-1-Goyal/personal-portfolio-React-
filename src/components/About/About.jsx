@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
-import { Code as CodeIcon, School as SchoolIcon } from '@mui/icons-material';
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   minHeight: '100vh',

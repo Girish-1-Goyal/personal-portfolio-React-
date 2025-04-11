@@ -116,16 +116,13 @@ const ScrollableContent = styled(Box)({
 
 const Resume = () => {
   const theme = useTheme();
+  const [pageNumber, setPageNumber] = useState(1);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = React.useState(true);
-  const [numPages, setNumPages] = React.useState(null);
 
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setLoading(false);
+  };
 
   useEffect(() => {
     fetch('/resume.pdf')
@@ -210,7 +207,7 @@ const Resume = () => {
       },
       {
         name: 'Web Terminal',
-        description: 'Built an interactive web terminal emulator mimicking Ubuntu’s CLI experience using React.js, custom hooks, and dynamic command parsing.',
+        description: 'Built an interactive web terminal emulator mimicking Ubuntu's CLI experience using React.js, custom hooks, and dynamic command parsing.',
         technologies: ['React', 'Python', 'Flask'],
       },
       {

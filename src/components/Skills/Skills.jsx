@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Container, Typography, Grid, Paper, LinearProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
+import { useTheme, useMediaQuery } from '@mui/material';
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(8, 2),
@@ -49,6 +50,11 @@ const GradientText = styled(Typography)(({ theme }) => ({
 }));
 
 const Skills = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [hoveredSkill, setHoveredSkill] = useState(null);
+
   const skillsData = [
     {
       category: 'Programming',

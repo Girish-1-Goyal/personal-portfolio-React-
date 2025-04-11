@@ -101,7 +101,6 @@ const ResponsiveContainer = styled(Container)(({ theme }) => ({
 const Footer = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
 
   const socialLinks = [
     { icon: <GitHub />, url: 'https://github.com/Girish-1-Goyal', label: 'GitHub' },

@@ -1,5 +1,4 @@
 import React from 'react';
-import * as d3 from 'd3';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Text, Float, Grid, Cylinder } from '@react-three/drei';
 import { Box, useTheme } from '@mui/material';

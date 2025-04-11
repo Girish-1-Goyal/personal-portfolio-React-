@@ -204,7 +204,7 @@ const CompetitiveProgramming = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   if (loading && !profileData) {
     return (
