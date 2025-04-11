@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
-import { Box, Container, Typography, Grid, Paper, LinearProgress } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import React from 'react';
+import {
+  Container,
+  Box,
+  Typography,
+  Grid,
+  Card,
+  LinearProgress,
+} from '@mui/material';
 import { motion } from 'framer-motion';
-import { useTheme, useMediaQuery } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(8, 2),
@@ -11,7 +17,7 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   },
 }));
 
-const SkillCard = styled(Paper)(({ theme }) => ({
+const SkillCard = styled(Card)(({ theme }) => ({
   padding: theme.spacing(3),
   background: 'rgba(17, 17, 17, 0.95)',
   backdropFilter: 'blur(10px)',
@@ -50,10 +56,6 @@ const GradientText = styled(Typography)(({ theme }) => ({
 }));
 
 const Skills = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [hoveredSkill, setHoveredSkill] = useState(null);
 
   const skillsData = [
     {
@@ -114,7 +116,6 @@ const Skills = () => {
     visible: {
       opacity: 1,
       transition: {
-        duration: 0.5,
         staggerChildren: 0.1,
       },
     },
@@ -126,74 +127,77 @@ const Skills = () => {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.5,
+        type: 'spring',
+        stiffness: 100,
       },
     },
   };
 
   return (
     <StyledContainer maxWidth="xl">
-      <Typography
-        variant="h2"
-        gutterBottom
-        sx={{
-          textAlign: 'center',
-          mb: { xs: 4, sm: 6 },
-          fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-          background: `linear-gradient(45deg, #2196F3, #21CBF7)`,
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          fontWeight: 'bold',
-          letterSpacing: '-1px',
-          textShadow: '0 2px 10px rgba(0,0,0,0.1)',
-        }}
-      >
-        Skills & Expertise
-      </Typography>
+      <motion.div variants={containerVariants} initial="hidden" animate="visible">
+        <Typography
+          variant="h2"
+          gutterBottom
+          sx={{
+            textAlign: 'center',
+            mb: { xs: 4, sm: 6 },
+            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+            background: `linear-gradient(45deg, #2196F3, #21CBF7)`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            fontWeight: 'bold',
+            letterSpacing: '-1px',
+            textShadow: '0 2px 10px rgba(0,0,0,0.1)',
+          }}
+        >
+          Skills & Expertise
+        </Typography>
 
-      {skillsData.map((category, categoryIndex) => (
-        <Box key={categoryIndex} sx={{ mb: { xs: 4, sm: 6, md: 8 } }}>
-          <GradientText variant="h3" align="center" sx={{ color: category.color }}>
-            {category.category}
-          </GradientText>
+        {skillsData.map((category, categoryIndex) => (
+          <Box key={categoryIndex} sx={{ mb: { xs: 4, sm: 6, md: 8 } }}>
+            <GradientText variant="h3" align="center" sx={{ color: category.color }}>
+              {category.category}
+            </GradientText>
 
-          <Grid container spacing={4} justifyContent="center">
-            <Grid item xs={12} sm={8} md={6}>
-              <motion.div variants={itemVariants}>
-                <SkillCard elevation={0}>
-                  {category.skills.map((skill) => (
-                    <SkillItem key={skill.name}>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                        <Typography variant="body1" sx={{ color: 'text.primary' }}>
-                          {skill.name}
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                          {skill.level}%
-                        </Typography>
-                      </Box>
-                      <StyledLinearProgress
-                        variant="determinate"
-                        value={skill.level}
-                        sx={{
-                          animation: 'progress 1s ease-in-out forwards',
-                          '@keyframes progress': {
-                            '0%': {
-                              width: '0%',
+            <Grid container spacing={4} justifyContent="center">
+              <Grid item xs={12} sm={8} md={6}>
+                <motion.div variants={itemVariants}>
+                  <SkillCard elevation={0}>
+                    {category.skills.map((skill) => (
+                      <SkillItem key={skill.name}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                          <Typography variant="body1" sx={{ color: 'text.primary' }}>
+                            {skill.name}
+                          </Typography>
+                          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                            {skill.level}%
+                          </Typography>
+                        </Box>
+                        <StyledLinearProgress
+                          variant="determinate"
+                          value={skill.level}
+                          sx={{
+                            animation: 'progress 1s ease-in-out forwards',
+                            '@keyframes progress': {
+                              '0%': {
+                                width: '0%',
+                              },
+                              '100%': {
+                                width: '100%',
+                              },
                             },
-                            '100%': {
-                              width: '100%',
-                            },
-                          },
-                        }}
-                      />
-                    </SkillItem>
-                  ))}
-                </SkillCard>
-              </motion.div>
+                          }}
+                        />
+                      </SkillItem>
+                    ))}
+                  </SkillCard>
+                </motion.div>
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
-      ))}
+          </Box>
+        ))}
+      </motion.div>
     </StyledContainer>
   );
 };

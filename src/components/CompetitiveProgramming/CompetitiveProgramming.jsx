@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Container,
@@ -14,11 +14,9 @@ import {
   IconButton,
   Tooltip,
   CircularProgress,
-  Divider,
-  LinearProgress,
   Button,
 } from '@mui/material';
-import { Line, Bar, Doughnut } from 'react-chartjs-2';
+import { Bar, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -32,7 +30,7 @@ import {
   Legend,
   Filler
 } from 'chart.js';
-import { RatingGraph, ProblemSolving3D } from './CompetitiveVisuals';
+import { RatingGraph } from './CompetitiveVisuals';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CodeIcon from '@mui/icons-material/Code';
@@ -66,141 +64,134 @@ const CompetitiveProgramming = () => {
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [ratingHistory, setRatingHistory] = useState([]);
   const [recentSubmissions, setRecentSubmissions] = useState([]);
-  const [blogEntries, setBlogEntries] = useState([]);
-  const [contests, setContests] = useState([]);
   const [stats, setStats] = useState({
     solvedByDifficulty: {},
     solvedByTag: {},
     contestPerformance: {},
   });
 
-  const getDifficultyColor = (difficulty) => {
-    if (!difficulty || difficulty === 'Unknown') return theme.palette.grey[500];
-    const rating = parseInt(difficulty);
-    if (rating < 1200) return '#808080'; // Grey
-    if (rating < 1400) return '#008000'; // Green
-    if (rating < 1600) return '#03A89E'; // Cyan
-    if (rating < 1900) return '#0000FF'; // Blue
-    if (rating < 2100) return '#AA00AA'; // Violet
-    if (rating < 2300) return '#FF8C00'; // Orange
-    if (rating < 2400) return '#FF8C00'; // Orange
-    if (rating < 2600) return '#FF0000'; // Red
-    if (rating < 3000) return '#FF0000'; // Red
-    return '#FF0000'; // Red
-  };
+  const getDifficultyColor = useCallback((difficulty) => {
+    if (difficulty <= 1200) return '#43A047';
+    if (difficulty <= 1400) return '#7CB342';
+    if (difficulty <= 1600) return '#C0CA33';
+    if (difficulty <= 1900) return '#FFB300';
+    if (difficulty <= 2100) return '#FB8C00';
+    if (difficulty <= 2400) return '#F4511E';
+    return '#C62828';
+  }, []);
 
-  const getRankColor = (rank) => {
-    if (!rank) return theme.palette.grey[500];
-    const rankStr = String(rank).toLowerCase();
-    if (rankStr.includes('legendary')) return '#FF0000'; // Red
-    if (rankStr.includes('international')) return '#FF0000'; // Red
-    if (rankStr.includes('grandmaster')) return '#FF0000'; // Red
-    if (rankStr.includes('master')) return '#FF8C00'; // Orange
-    if (rankStr.includes('candidate')) return '#AA00AA'; // Violet
-    if (rankStr.includes('expert')) return '#0000FF'; // Blue
-    if (rankStr.includes('specialist')) return '#03A89E'; // Cyan
-    if (rankStr.includes('pupil')) return '#008000'; // Green
-    return '#808080'; // Grey
-  };
+  const getRankColor = useCallback((rank) => {
+    if (!rank || typeof rank !== 'string') return '#999999';
+    const rankLower = rank.toLowerCase();
+    if (rankLower.includes('newbie')) return '#999999';
+    if (rankLower.includes('pupil')) return '#43A047';
+    if (rankLower.includes('specialist')) return '#2196F3';
+    if (rankLower.includes('expert')) return '#9C27B0';
+    if (rankLower.includes('candidate master')) return '#E91E63';
+    if (rankLower.includes('master')) return '#FF9800';
+    if (rankLower.includes('grandmaster')) return '#F44336';
+    return '#999999';
+  }, []);
 
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const handle = 'Girish_k_Goyal';
-        
-        // Fetch basic user info and photo first
-        const [userInfo, photoUrl] = await Promise.all([
-          fetchUserInfo(handle),
-          fetchUserPhoto(handle)
-        ]);
-        
-        setProfilePhoto(photoUrl);
-        
-        // Then fetch other data in parallel
-        const [ratingData, submissions] = await Promise.all([
-          fetchUserRating(handle),
-          fetchUserSubmissions(handle)
-        ]);
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const handle = 'Girish_k_Goyal';
+      
+      // Fetch basic user info and photo first
+      const [userInfo, photoUrl] = await Promise.all([
+        fetchUserInfo(handle),
+        fetchUserPhoto(handle)
+      ]);
+      
+      setProfilePhoto(photoUrl);
+      
+      // Then fetch other data in parallel
+      const [ratingData, submissions] = await Promise.all([
+        fetchUserRating(handle),
+        fetchUserSubmissions(handle)
+      ]);
 
-        // Process submissions for statistics
-        const solvedByDifficulty = {};
-        const solvedByTag = {};
-        const solvedProblems = new Set();
+      // Process submissions for statistics
+      const solvedByDifficulty = {};
+      const solvedByTag = {};
+      const solvedProblems = new Set();
 
-        submissions.forEach(sub => {
-          if (sub.verdict === 'OK' && !solvedProblems.has(sub.problem.name)) {
-            solvedProblems.add(sub.problem.name);
-            
-            // Count by difficulty
-            const rating = sub.problem.rating || 0;
-            const difficulty = Math.floor(rating / 100) * 100;
-            solvedByDifficulty[difficulty] = (solvedByDifficulty[difficulty] || 0) + 1;
+      submissions.forEach(sub => {
+        if (sub.verdict === 'OK' && !solvedProblems.has(sub.problem.name)) {
+          solvedProblems.add(sub.problem.name);
+          
+          // Count by difficulty
+          const rating = sub.problem.rating || 0;
+          const difficulty = Math.floor(rating / 100) * 100;
+          solvedByDifficulty[difficulty] = (solvedByDifficulty[difficulty] || 0) + 1;
 
-            // Count by tags
-            sub.problem.tags?.forEach(tag => {
-              solvedByTag[tag] = (solvedByTag[tag] || 0) + 1;
-            });
-          }
-        });
+          // Count by tags
+          sub.problem.tags?.forEach(tag => {
+            solvedByTag[tag] = (solvedByTag[tag] || 0) + 1;
+          });
+        }
+      });
 
-        // Process contest performance with rank colors
-        const contestPerformance = {};
-        ratingData.forEach(contest => {
-          const contestName = contest.contestName;
-          const performance = contest.newRating - contest.oldRating;
-          contestPerformance[contestName] = {
-            performance,
-            rank: contest.rank,
-            color: getRankColor(contest.rank)
-          };
-        });
+      // Process contest performance with rank colors
+      const contestPerformance = {};
+      ratingData.forEach(contest => {
+        const contestName = contest.contestName;
+        const performance = contest.newRating - contest.oldRating;
+        const rankStr = String(contest.rank || '');
+        contestPerformance[contestName] = {
+          performance,
+          rank: rankStr,
+          color: getRankColor(rankStr)
+        };
+      });
 
-        setProfileData({
-          name: userInfo.firstName + ' ' + userInfo.lastName,
-          handle: userInfo.handle,
-          currentRating: userInfo.rating,
-          maxRating: userInfo.maxRating,
-          rank: userInfo.rank,
-          maxRank: userInfo.maxRank,
-          country: userInfo.country,
-          organization: userInfo.organization,
-          contribution: userInfo.contribution,
-        });
+      setProfileData({
+        name: userInfo.firstName + ' ' + userInfo.lastName,
+        handle: userInfo.handle,
+        currentRating: userInfo.rating,
+        maxRating: userInfo.maxRating,
+        rank: String(userInfo.rank || ''),
+        maxRank: String(userInfo.maxRank || ''),
+        country: userInfo.country,
+        organization: userInfo.organization,
+        contribution: userInfo.contribution,
+      });
 
-        setRatingHistory(ratingData.map(rating => ({
-          date: new Date(rating.ratingUpdateTimeSeconds * 1000),
-          rating: rating.newRating,
-          rank: rating.rank,
-          color: getRankColor(rating.rank)
-        })));
+      setRatingHistory(ratingData.map(rating => ({
+        date: new Date(rating.ratingUpdateTimeSeconds * 1000),
+        rating: rating.newRating,
+        rank: String(rating.rank || ''),
+        color: getRankColor(String(rating.rank || ''))
+      })));
 
-        setRecentSubmissions(submissions.map(sub => ({
-          id: sub.id,
-          problem: sub.problem.name,
-          platform: 'Codeforces',
-          status: sub.verdict,
-          date: new Date(sub.creationTimeSeconds * 1000).toISOString().split('T')[0],
-          difficulty: sub.problem.rating ? `${sub.problem.rating}` : 'Unknown',
-          tags: sub.problem.tags || [],
-          contestId: sub.contestId,
-          difficultyColor: getDifficultyColor(sub.problem.rating)
-        })));
+      setRecentSubmissions(submissions.map(sub => ({
+        id: sub.id,
+        problem: sub.problem.name,
+        platform: 'Codeforces',
+        status: sub.verdict,
+        date: new Date(sub.creationTimeSeconds * 1000).toISOString().split('T')[0],
+        difficulty: sub.problem.rating ? `${sub.problem.rating}` : 'Unknown',
+        tags: sub.problem.tags || [],
+        contestId: sub.contestId,
+        difficultyColor: getDifficultyColor(sub.problem.rating)
+      })));
 
-        setStats({
-          solvedByDifficulty,
-          solvedByTag,
-          contestPerformance,
-          totalSolved: solvedProblems.size
-        });
+      setStats({
+        solvedByDifficulty,
+        solvedByTag,
+        contestPerformance,
+        totalSolved: solvedProblems.size
+      });
 
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching Codeforces data:', error);
-        setError(error.message || 'Failed to fetch data from Codeforces. Please try again later.');
-        setLoading(false);
-      }
-    };
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching Codeforces data:', error);
+      setError(error.message || 'Failed to fetch data from Codeforces. Please try again later.');
+      setLoading(false);
+    }
+  }, [getDifficultyColor, getRankColor]);
 
   useEffect(() => {
     fetchData();

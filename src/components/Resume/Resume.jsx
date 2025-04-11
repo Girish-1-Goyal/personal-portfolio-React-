@@ -1,10 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   Container,
   Box,
   Button,
   Typography,
   useTheme,
+  Grid,
+  Card,
+  CardContent,
+  Chip,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material';
 import {
   Download as DownloadIcon,
@@ -16,18 +24,6 @@ import {
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
-import {
-  Grid,
-  Card,
-  CardContent,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Chip,
-  Skeleton,
-  Paper,
-} from '@mui/material';
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   minHeight: '100vh',
@@ -66,76 +62,8 @@ const SkillChip = styled(Chip)(({ theme }) => ({
   backdropFilter: 'blur(10px)',
 }));
 
-const DownloadButton = styled(Button)(({ theme }) => ({
-  padding: theme.spacing(2, 4),
-  borderRadius: theme.shape.borderRadius * 2,
-  fontSize: '1.1rem',
-  fontWeight: 600,
-  background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-  color: theme.palette.common.white,
-  border: 'none',
-  boxShadow: `0 8px 16px ${theme.palette.primary.main}30`,
-  transition: 'all 0.3s ease-in-out',
-  '&:hover': {
-    background: `linear-gradient(45deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark})`,
-    transform: 'translateY(-2px)',
-    boxShadow: `0 12px 20px ${theme.palette.primary.main}40`,
-  },
-}));
-
-const SectionCard = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(3),
-  height: '400px',
-  background: 'rgba(255, 255, 255, 0.05)',
-  backdropFilter: 'blur(10px)',
-  borderRadius: theme.shape.borderRadius * 2,
-  border: '1px solid rgba(255, 255, 255, 0.1)',
-  overflow: 'hidden',
-  display: 'flex',
-  flexDirection: 'column',
-}));
-
-const ScrollableContent = styled(Box)({
-  overflowY: 'auto',
-  flex: 1,
-  '&::-webkit-scrollbar': {
-    width: '8px',
-  },
-  '&::-webkit-scrollbar-track': {
-    background: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: '4px',
-  },
-  '&::-webkit-scrollbar-thumb': {
-    background: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: '4px',
-    '&:hover': {
-      background: 'rgba(255, 255, 255, 0.3)',
-    },
-  },
-});
-
 const Resume = () => {
   const theme = useTheme();
-  const [pageNumber, setPageNumber] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetch('/resume.pdf')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Resume file not found');
-        }
-      })
-      .catch(err => {
-        console.error('Error loading resume:', err);
-        setError('Unable to load resume. Please try again later.');
-      });
-  }, []);
 
   const resumeData = {
     education: [
@@ -258,43 +186,6 @@ const Resume = () => {
       },
     },
   };
-
-  if (loading) {
-    return (
-      <StyledContainer maxWidth="lg">
-        <Grid container spacing={4}>
-          <Grid item xs={12}>
-            <Skeleton variant="text" height={60} />
-            <Skeleton variant="rectangular" height={800} />
-          </Grid>
-        </Grid>
-      </StyledContainer>
-    );
-  }
-
-  if (error) {
-    return (
-      <StyledContainer maxWidth="lg" id="resume">
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '60vh',
-            flexDirection: 'column',
-            gap: 2,
-          }}
-        >
-          <Typography color="error" variant="h6">
-            {error}
-          </Typography>
-          <Typography variant="body1">
-            Please ensure the resume.pdf file is present in the public folder.
-          </Typography>
-        </Box>
-      </StyledContainer>
-    );
-  }
 
   return (
     <StyledContainer maxWidth="lg" id="resume">
@@ -424,7 +315,7 @@ const Resume = () => {
                       ))}
                     </Box>
                   </Box>
-                  <Box>
+                  <Box sx={{ mb: 3 }}>
                     <Typography variant="h6" color="secondary" gutterBottom>
                       Soft Skills
                     </Typography>
@@ -439,10 +330,9 @@ const Resume = () => {
                       ))}
                     </Box>
                   </Box>
-                  <br></br>
                   <Box>
                     <Typography variant="h6" color="secondary" gutterBottom>
-                      OS Skills
+                      Operating Systems
                     </Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                       {resumeData.skills.Os.map((skill, index) => (
