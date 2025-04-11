@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, CssBaseline, ThemeProvider, Container } from '@mui/material';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import theme from './theme/ThemeConfig';
 import Navbar from './components/Navbar/Navbar';
 import Home from './components/Home/Home';
@@ -14,6 +14,7 @@ import GithubActivity from './components/GithubActivity/GithubActivity';
 import Contact from './components/Contact/Contact';
 import Footer from './components/Footer/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
+import { styled } from '@mui/material/styles';
 
 function App() {
   const [activeSection, setActiveSection] = useState('home');

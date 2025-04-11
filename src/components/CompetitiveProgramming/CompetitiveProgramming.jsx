@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -33,21 +33,14 @@ import {
   Filler
 } from 'chart.js';
 import { RatingGraph, ProblemSolving3D } from './CompetitiveVisuals';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CodeIcon from '@mui/icons-material/Code';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import PeopleIcon from '@mui/icons-material/People';
-import ArticleIcon from '@mui/icons-material/Article';
 import { 
   fetchUserInfo, 
   fetchUserRating, 
   fetchUserSubmissions,
-  fetchUserBlogEntries,
-  fetchUserContests,
-  fetchUserFriends,
   fetchUserPhoto
 } from '../../services/codeforcesService';
 
@@ -80,7 +73,6 @@ const CompetitiveProgramming = () => {
     solvedByTag: {},
     contestPerformance: {},
   });
-  const pollingInterval = useRef(null);
 
   const getDifficultyColor = (difficulty) => {
     if (!difficulty || difficulty === 'Unknown') return theme.palette.grey[500];
@@ -114,23 +106,21 @@ const CompetitiveProgramming = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-      setError(null);
+        setError(null);
         const handle = 'Girish_k_Goyal';
         
-      // Fetch basic user info and photo first
-      const [userInfo, photoUrl] = await Promise.all([
-        fetchUserInfo(handle),
-        fetchUserPhoto(handle)
-      ]);
-      
-      setProfilePhoto(photoUrl);
+        // Fetch basic user info and photo first
+        const [userInfo, photoUrl] = await Promise.all([
+          fetchUserInfo(handle),
+          fetchUserPhoto(handle)
+        ]);
+        
+        setProfilePhoto(photoUrl);
         
         // Then fetch other data in parallel
-        const [ratingData, submissions, blogs, contestData] = await Promise.all([
+        const [ratingData, submissions] = await Promise.all([
           fetchUserRating(handle),
-          fetchUserSubmissions(handle),
-          fetchUserBlogEntries(handle),
-          fetchUserContests(handle)
+          fetchUserSubmissions(handle)
         ]);
 
         // Process submissions for statistics
@@ -154,16 +144,16 @@ const CompetitiveProgramming = () => {
           }
         });
 
-      // Process contest performance with rank colors
+        // Process contest performance with rank colors
         const contestPerformance = {};
-        contestData.forEach(contest => {
+        ratingData.forEach(contest => {
           const contestName = contest.contestName;
           const performance = contest.newRating - contest.oldRating;
-        contestPerformance[contestName] = {
-          performance,
-          rank: contest.rank,
-          color: getRankColor(contest.rank)
-        };
+          contestPerformance[contestName] = {
+            performance,
+            rank: contest.rank,
+            color: getRankColor(contest.rank)
+          };
         });
 
         setProfileData({
@@ -180,9 +170,9 @@ const CompetitiveProgramming = () => {
 
         setRatingHistory(ratingData.map(rating => ({
           date: new Date(rating.ratingUpdateTimeSeconds * 1000),
-        rating: rating.newRating,
-        rank: rating.rank,
-        color: getRankColor(rating.rank)
+          rating: rating.newRating,
+          rank: rating.rank,
+          color: getRankColor(rating.rank)
         })));
 
         setRecentSubmissions(submissions.map(sub => ({
@@ -192,13 +182,11 @@ const CompetitiveProgramming = () => {
           status: sub.verdict,
           date: new Date(sub.creationTimeSeconds * 1000).toISOString().split('T')[0],
           difficulty: sub.problem.rating ? `${sub.problem.rating}` : 'Unknown',
-        tags: sub.problem.tags || [],
-        contestId: sub.contestId,
-        difficultyColor: getDifficultyColor(sub.problem.rating)
+          tags: sub.problem.tags || [],
+          contestId: sub.contestId,
+          difficultyColor: getDifficultyColor(sub.problem.rating)
         })));
 
-        setBlogEntries(blogs);
-        setContests(contestData);
         setStats({
           solvedByDifficulty,
           solvedByTag,
@@ -209,23 +197,13 @@ const CompetitiveProgramming = () => {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching Codeforces data:', error);
-      setError(error.message || 'Failed to fetch data from Codeforces. Please try again later.');
+        setError(error.message || 'Failed to fetch data from Codeforces. Please try again later.');
         setLoading(false);
       }
     };
 
   useEffect(() => {
     fetchData();
-
-    // Set up polling for updates every 2 minutes (reduced from 1 minute to avoid rate limits)
-    pollingInterval.current = setInterval(fetchData, 2 * 60 * 1000);
-
-    // Cleanup interval on unmount
-    return () => {
-      if (pollingInterval.current) {
-        clearInterval(pollingInterval.current);
-      }
-    };
   }, []);
 
   if (loading && !profileData) {
