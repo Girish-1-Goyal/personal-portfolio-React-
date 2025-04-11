@@ -1,0 +1,62 @@
+@startuml Portfolio Component Diagram
+
+package "Portfolio Components" {
+  [Home]
+  [About]
+  [Skills]
+  [Projects]
+  [Resume]
+  [CompetitiveProgramming]
+  [Contact]
+}
+
+package "UI Components" {
+  [ThemeProvider]
+  [Layout]
+  [Navbar]
+  [Footer]
+  [AnimatedCard]
+  [GlassCard]
+  [ProgressBar]
+}
+
+package "Utils" {
+  [ThemeContext]
+  [AnimationUtils]
+  [DataContext]
+}
+
+database "Static Data" {
+  [SkillsData]
+  [ProjectsData]
+  [ResumeData]
+  [CompetitiveProgrammingData]
+}
+
+[App] --> [ThemeProvider]
+[ThemeProvider] --> [Layout]
+[Layout] --> [Navbar]
+[Layout] --> [Footer]
+
+[Layout] --> [Home]
+[Layout] --> [About]
+[Layout] --> [Skills]
+[Layout] --> [Projects]
+[Layout] --> [Resume]
+[Layout] --> [CompetitiveProgramming]
+[Layout] --> [Contact]
+
+[Skills] --> [SkillsData]
+[Projects] --> [ProjectsData]
+[Resume] --> [ResumeData]
+[CompetitiveProgramming] --> [CompetitiveProgrammingData]
+
+[Skills] ..> [AnimatedCard]
+[Projects] ..> [GlassCard]
+[Resume] ..> [ProgressBar]
+
+[ThemeProvider] ..> [ThemeContext]
+[Layout] ..> [AnimationUtils]
+[App] ..> [DataContext]
+
+@enduml
