@@ -207,7 +207,7 @@ const Resume = () => {
       },
       {
         name: 'Web Terminal',
-        description: 'Built an interactive web terminal emulator mimicking Ubuntu's CLI experience using React.js, custom hooks, and dynamic command parsing.',
+        description: 'Built an interactive web terminal emulator mimicking Ubuntus CLI experience using React.js, custom hooks, and dynamic command parsing.',
         technologies: ['React', 'Python', 'Flask'],
       },
       {
