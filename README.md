@@ -4,7 +4,6 @@ A modern, responsive portfolio website built with React, Material-UI, and variou
 
 ## Features
 
-- 🌓 Light/Dark theme toggle
 - 📱 Fully responsive design
 - 📊 Real-time GitHub activity integration
 - 📝 Blog section
@@ -25,16 +24,7 @@ cd modern-portfolio
 ```bash
 npm install
 ```
-
-3. Configure EmailJS
-- Sign up at [EmailJS](https://www.emailjs.com/)
-- Create a new service and email template
-- Update the following in `src/components/Contact/Contact.jsx`:
-  - YOUR_SERVICE_ID
-  - YOUR_TEMPLATE_ID
-  - YOUR_USER_ID
-
-4. Start the development server
+3. Start the development server
 ```bash
 npm start
 ```
@@ -44,7 +34,6 @@ npm start
 - React
 - Material-UI
 - Framer Motion
-- EmailJS
 - React GitHub Calendar
 - Styled Components
 - React Router
