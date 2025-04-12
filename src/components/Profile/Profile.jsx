@@ -55,6 +55,10 @@ const LargeAvatar = styled(Avatar)(({ theme }) => ({
   boxShadow: theme.shadows[10],
   objectFit: 'cover',
   objectPosition: 'center',
+  [theme.breakpoints.down('sm')]: {
+    width: 280,
+    height: 280,
+  },
   '& img': {
     width: '100%',
     height: '100%',
@@ -152,6 +156,9 @@ const Profile = () => {
             position: 'relative',
             width: 'fit-content',
             margin: '0 auto',
+            maxWidth: '100%',
+            overflow: 'hidden',
+            px: { xs: 2, sm: 0 },
           }}>
             <LargeAvatar
               src="/profile.jpg"
@@ -172,8 +179,8 @@ const Profile = () => {
                 top: -10,
                 left: '50%',
                 transform: 'translateX(-50%)',
-                width: '420px',
-                height: '420px',
+                width: { xs: '300px', sm: '420px' },
+                height: { xs: '300px', sm: '420px' },
                 borderRadius: '50%',
                 background: `linear-gradient(45deg, ${theme.palette.primary.main}20, ${theme.palette.secondary.main}20)`,
                 filter: 'blur(20px)',

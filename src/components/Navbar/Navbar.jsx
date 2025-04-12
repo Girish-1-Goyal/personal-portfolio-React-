@@ -33,9 +33,9 @@ const StyledAppBar = styled(AppBar)(({ theme, transparent }) => ({
 
 const ActionButton = styled(Button)(({ theme }) => ({
   position: 'fixed',
-  left: theme.spacing(4),
-  width: '60px',
-  height: '60px',
+  left: theme.spacing(2),
+  width: '40px',
+  height: '40px',
   minWidth: 'unset',
   padding: 0,
   borderRadius: '50%',
@@ -49,8 +49,8 @@ const ActionButton = styled(Button)(({ theme }) => ({
     background: 'linear-gradient(45deg, #1A2980, #26D0CE)',
   },
   '@media (max-width: 900px)': {
-    width: '50px',
-    height: '50px',
+    width: '35px',
+    height: '35px',
   },
 }));
 
@@ -203,7 +203,7 @@ const Navbar = ({ toggleTheme }) => {
                   fontWeight: 700,
                 }}
               >
-                GKG
+                GIRISH KUMAR GOYAL
               </Typography>
 
               <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
@@ -238,7 +238,7 @@ const Navbar = ({ toggleTheme }) => {
       {/* Fixed position action buttons */}
       <ActionButton
         onClick={handleGithubRedirect}
-        sx={{ bottom: '160px' }}
+        sx={{ bottom: '120px' }}
       >
         <ButtonLabel>GitHub</ButtonLabel>
         <GitHub />
@@ -246,7 +246,7 @@ const Navbar = ({ toggleTheme }) => {
 
       <ActionButton
         onClick={handleCodechefRedirect}
-        sx={{ bottom: '90px' }}
+        sx={{ bottom: '65px' }}
       >
         <ButtonLabel>Codeforces</ButtonLabel>
         <CodeIcon />
@@ -254,7 +254,7 @@ const Navbar = ({ toggleTheme }) => {
 
       <ActionButton
         onClick={handleDownloadResume}
-        sx={{ bottom: '20px' }}
+        sx={{ bottom: '10px' }}
       >
         <ButtonLabel>Resume</ButtonLabel>
         <Download />

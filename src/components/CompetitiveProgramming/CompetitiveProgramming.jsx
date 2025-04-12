@@ -42,6 +42,7 @@ import {
   fetchUserPhoto
 } from '../../services/codeforcesService';
 
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -74,7 +75,7 @@ const CompetitiveProgramming = () => {
     if (difficulty <= 1200) return '#43A047';
     if (difficulty <= 1400) return '#7CB342';
     if (difficulty <= 1600) return '#C0CA33';
-    if (difficulty <= 1900) return '#FFB300';
+    if (difficulty <= 1900) return '#0202ba';
     if (difficulty <= 2100) return '#FB8C00';
     if (difficulty <= 2400) return '#F4511E';
     return '#C62828';
@@ -86,7 +87,7 @@ const CompetitiveProgramming = () => {
     if (rankLower.includes('newbie')) return '#999999';
     if (rankLower.includes('pupil')) return '#43A047';
     if (rankLower.includes('specialist')) return '#2196F3';
-    if (rankLower.includes('expert')) return '#9C27B0';
+    if (rankLower.includes('expert')) return '#0202ba';
     if (rankLower.includes('candidate master')) return '#E91E63';
     if (rankLower.includes('master')) return '#FF9800';
     if (rankLower.includes('grandmaster')) return '#F44336';
@@ -175,6 +176,7 @@ const CompetitiveProgramming = () => {
         difficulty: sub.problem.rating ? `${sub.problem.rating}` : 'Unknown',
         tags: sub.problem.tags || [],
         contestId: sub.contestId,
+        problemIndex: sub.problem.index,
         difficultyColor: getDifficultyColor(sub.problem.rating)
       })));
 
@@ -299,13 +301,18 @@ const CompetitiveProgramming = () => {
           <Paper
             elevation={3}
             sx={{
-              p: 3,
+              p: { xs: 2, sm: 3 },
               background: `linear-gradient(145deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`,
               position: 'relative',
               overflow: 'hidden',
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', sm: 'row' },
+              alignItems: { xs: 'center', sm: 'flex-start' },
+              gap: { xs: 2, sm: 3 }
+            }}>
               <Box 
                 component="a"
                 href="https://codeforces.com/profile/Girish-1-Goyal"
@@ -324,20 +331,36 @@ const CompetitiveProgramming = () => {
                   src={profilePhoto}
                   alt="Profile"
                   sx={{
-                    width: 120,
-                    height: 120,
+                    width: { xs: 100, sm: 120 },
+                    height: { xs: 100, sm: 120 },
                     border: `3px solid ${getRankColor(profileData?.rank)}`,
                     boxShadow: `0 0 20px ${getRankColor(profileData?.rank)}40`,
-                    fontSize: '2.5rem',
+                    fontSize: { xs: '2rem', sm: '2.5rem' },
                     fontWeight: 'bold',
                   }}
                 >
                   {!profilePhoto && 'GK'}
                 </Avatar>
               </Box>
-              <Box sx={{ flex: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+              <Box sx={{ 
+                flex: 1,
+                width: '100%',
+                textAlign: { xs: 'center', sm: 'left' }
+              }}>
+                <Box sx={{ 
+                  display: 'flex', 
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  alignItems: { xs: 'center', sm: 'center' },
+                  gap: { xs: 1, sm: 2 },
+                  mb: 1 
+                }}>
+                  <Typography 
+                    variant="h4" 
+                    sx={{ 
+                      fontWeight: 'bold',
+                      fontSize: { xs: '1.5rem', sm: '2rem' }
+                    }}
+                  >
                     {profileData?.handle}
                   </Typography>
                   {profileData?.rank && (
@@ -355,78 +378,134 @@ const CompetitiveProgramming = () => {
                     />
                   )}
                 </Box>
-                <Typography variant="subtitle1" color="textSecondary" sx={{ mb: 2 }}>
+                <Typography 
+                  variant="subtitle1" 
+                  color="textSecondary" 
+                  sx={{ 
+                    mb: 2,
+                    fontSize: { xs: '0.875rem', sm: '1rem' },
+                    px: { xs: 2, sm: 0 }
+                  }}
+                >
                   GL Bajaj Institute of Technology and Management
                 </Typography>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6} md={3}>
+                  <Grid item xs={6} sm={6} md={3}>
                     <Paper
                       elevation={0}
                       sx={{
-                        p: 2,
+                        p: { xs: 1.5, sm: 2 },
                         textAlign: 'center',
                         background: theme.palette.action.hover,
                         borderRadius: 2,
                       }}
                     >
-                      <Typography variant="h6" color="primary">
+                      <Typography 
+                        variant="h6" 
+                        color="primary"
+                        sx={{
+                          fontSize: { xs: '1.1rem', sm: '1.25rem' }
+                        }}
+                      >
                         {profileData?.currentRating || 0}
                       </Typography>
-                      <Typography variant="body2" color="textSecondary">
+                      <Typography 
+                        variant="body2" 
+                        color="textSecondary"
+                        sx={{
+                          fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                        }}
+                      >
                         Current Rating
                       </Typography>
                     </Paper>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
+                  <Grid item xs={6} sm={6} md={3}>
                     <Paper
                       elevation={0}
                       sx={{
-                        p: 2,
+                        p: { xs: 1.5, sm: 2 },
                         textAlign: 'center',
                         background: theme.palette.action.hover,
                         borderRadius: 2,
                       }}
                     >
-                      <Typography variant="h6" color="primary">
+                      <Typography 
+                        variant="h6" 
+                        color="primary"
+                        sx={{
+                          fontSize: { xs: '1.1rem', sm: '1.25rem' }
+                        }}
+                      >
                         {profileData?.maxRating || 0}
                       </Typography>
-                      <Typography variant="body2" color="textSecondary">
+                      <Typography 
+                        variant="body2" 
+                        color="textSecondary"
+                        sx={{
+                          fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                        }}
+                      >
                         Max Rating
                       </Typography>
                     </Paper>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
+                  <Grid item xs={6} sm={6} md={3}>
                     <Paper
                       elevation={0}
                       sx={{
-                        p: 2,
+                        p: { xs: 1.5, sm: 2 },
                         textAlign: 'center',
                         background: theme.palette.action.hover,
                         borderRadius: 2,
                       }}
                     >
-                      <Typography variant="h6" color="primary">
+                      <Typography 
+                        variant="h6" 
+                        color="primary"
+                        sx={{
+                          fontSize: { xs: '1.1rem', sm: '1.25rem' }
+                        }}
+                      >
                         {profileData?.contribution || 0}
                       </Typography>
-                      <Typography variant="body2" color="textSecondary">
+                      <Typography 
+                        variant="body2" 
+                        color="textSecondary"
+                        sx={{
+                          fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                        }}
+                      >
                         Contribution
                       </Typography>
                     </Paper>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
+                  <Grid item xs={6} sm={6} md={3}>
                     <Paper
                       elevation={0}
                       sx={{
-                        p: 2,
+                        p: { xs: 1.5, sm: 2 },
                         textAlign: 'center',
                         background: theme.palette.action.hover,
                         borderRadius: 2,
                       }}
                     >
-                      <Typography variant="h6" color="primary">
+                      <Typography 
+                        variant="h6" 
+                        color="primary"
+                        sx={{
+                          fontSize: { xs: '1.1rem', sm: '1.25rem' }
+                        }}
+                      >
                         {profileData?.friendOfCount || 0}
                       </Typography>
-                      <Typography variant="body2" color="textSecondary">
+                      <Typography 
+                        variant="body2" 
+                        color="textSecondary"
+                        sx={{
+                          fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                        }}
+                      >
                         Friends
                       </Typography>
                     </Paper>
@@ -573,75 +652,139 @@ const CompetitiveProgramming = () => {
                   }}
                 >
                   <CardContent sx={{ p: 1, '&:last-child': { pb: 1 } }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Avatar 
-                        sx={{ 
-                          width: 28, 
-                          height: 28,
-                          bgcolor: submission.difficultyColor,
-                        }}
-                      >
-                        <CheckCircleIcon sx={{ fontSize: 16 }} />
-                      </Avatar>
-                      <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                        <Typography 
-                          variant="subtitle2" 
-                          noWrap
+                    <Box sx={{ 
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      flexDirection: { xs: 'column', sm: 'row' },
+                      gap: { xs: 1, sm: 1 },
+                    }}>
+                      <Box sx={{ 
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        flex: 1,
+                        width: '100%',
+                        minWidth: 0
+                      }}>
+                        <Avatar 
                           sx={{ 
-                            color: submission.difficultyColor,
-                            fontWeight: 'bold'
+                            width: 28, 
+                            height: 28,
+                            bgcolor: submission.difficultyColor,
+                            flexShrink: 0
                           }}
                         >
-                          {submission.problem}
-                        </Typography>
-                        <Stack 
-                          direction="row" 
-                          spacing={0.5} 
-                          sx={{ mt: 0.5 }}
-                        >
-                          <Chip
-                            size="small"
-                            icon={<CodeIcon sx={{ fontSize: '0.7rem' }} />}
-                            label={submission.platform}
+                          <CheckCircleIcon sx={{ fontSize: 16 }} />
+                        </Avatar>
+                        <Box sx={{ 
+                          flex: 1,
+                          minWidth: 0
+                        }}>
+                          <Typography 
+                            variant="subtitle2" 
                             sx={{ 
-                              height: 16,
-                              '& .MuiChip-label': { px: 1, fontSize: '0.65rem' }
+                              color: submission.difficultyColor,
+                              fontWeight: 'bold',
+                              wordBreak: 'break-word',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              display: '-webkit-box',
+                              WebkitLineClamp: { xs: 1, sm: 2 },
+                              WebkitBoxOrient: 'vertical',
+                              lineHeight: '1.2em',
+                              maxHeight: { xs: '1.2em', sm: '2.4em' }
                             }}
-                          />
-                          <Chip
-                            size="small"
-                            icon={<AccessTimeIcon sx={{ fontSize: '0.7rem' }} />}
-                            label={submission.date}
+                          >
+                            {submission.problem}
+                          </Typography>
+                          <Stack 
+                            direction="row" 
+                            spacing={0.5} 
                             sx={{ 
-                              height: 16,
-                              '& .MuiChip-label': { px: 1, fontSize: '0.65rem' }
+                              mt: 0.5,
+                              flexWrap: 'wrap',
+                              gap: 0.5
                             }}
-                          />
-                          {submission.tags.map((tag, index) => (
+                          >
                             <Chip
-                              key={index}
                               size="small"
-                              label={tag}
+                              icon={<CodeIcon sx={{ fontSize: '0.7rem' }} />}
+                              label={submission.platform}
                               sx={{ 
                                 height: 16,
                                 '& .MuiChip-label': { px: 1, fontSize: '0.65rem' }
                               }}
                             />
-                          ))}
-                        </Stack>
+                            <Chip
+                              size="small"
+                              icon={<AccessTimeIcon sx={{ fontSize: '0.7rem' }} />}
+                              label={submission.date}
+                              sx={{ 
+                                height: 16,
+                                '& .MuiChip-label': { px: 1, fontSize: '0.65rem' }
+                              }}
+                            />
+                          </Stack>
+                        </Box>
                       </Box>
-                      {submission.status === 'OK' && (
-                      <Button
-                        size="small"
+                      <Stack
+                        direction={{ xs: 'row', sm: 'row' }}
+                        spacing={1}
+                        sx={{
+                          width: { xs: '100%', sm: 'auto' },
+                          justifyContent: { xs: 'flex-start', sm: 'flex-end' },
+                          mt: { xs: 1, sm: 0 }
+                        }}
+                      >
+                        <Button
+                          size="small"
                           component="a"
-                          href={`https://codeforces.com/contest/${submission.contestId}/submission/${submission.id}`}
+                          href={`https://codeforces.com/contest/${submission.contestId}/problem/${submission.problemIndex}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                        startIcon={<CodeIcon />}
-                      >
-                        View Solution
-                      </Button>
-                      )}
+                          variant="outlined"
+                          sx={{
+                            minWidth: { xs: '45%', sm: 'auto' },
+                            flex: { xs: 1, sm: 'none' },
+                            px: { xs: 1, sm: 2 },
+                            py: 0.5,
+                            fontSize: '0.75rem',
+                            borderColor: theme.palette.divider,
+                            color: theme.palette.text.primary,
+                            '&:hover': {
+                              borderColor: theme.palette.primary.main,
+                              bgcolor: 'transparent'
+                            }
+                          }}
+                        >
+                          View Problem
+                        </Button>
+                        {submission.status === 'OK' && (
+                          <Button
+                            size="small"
+                            component="a"
+                            href={`https://codeforces.com/contest/${submission.contestId}/submission/${submission.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            variant="outlined"
+                            sx={{
+                              minWidth: { xs: '45%', sm: 'auto' },
+                              flex: { xs: 1, sm: 'none' },
+                              px: { xs: 1, sm: 2 },
+                              py: 0.5,
+                              fontSize: '0.75rem',
+                              borderColor: theme.palette.divider,
+                              color: theme.palette.text.primary,
+                              '&:hover': {
+                                borderColor: theme.palette.primary.main,
+                                bgcolor: 'transparent'
+                              }
+                            }}
+                          >
+                            View Solution
+                          </Button>
+                        )}
+                      </Stack>
                     </Box>
                   </CardContent>
                 </Card>
@@ -709,6 +852,9 @@ const CompetitiveProgramming = () => {
           </Paper>
         </Grid>
       </Grid>
+
+      {/* Floating Action Buttons */}
+      
     </Container>
   );
 };
