@@ -85,7 +85,7 @@ const Projects = () => {
       description: 'Built an interactive web terminal emulator mimicking Ubuntu’s CLI experience using React.js, custom hooks, and dynamic command parsing',
       technologies: ['React', 'Python', 'Flask'],
       github: 'https://github.com/Girish-1-Goyal/WebTerminal-Project-',
-      demo: '#',
+      demo: 'https://webterm-u.netlify.app/',
     },
     {
       title: 'Data Structures Handbook',
