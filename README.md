@@ -49,7 +49,7 @@ npm start
 
 ## Contributing
 
-Feel free to fork this repository and make your own changes. Pull requests are welcome!
+Feel free to fork this repository from preview branch and make your own changes. Pull requests are welcome!
 
 ## License
 
