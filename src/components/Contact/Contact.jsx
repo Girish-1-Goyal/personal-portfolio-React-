@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Container,
   Typography,
@@ -20,6 +20,7 @@ import {
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
+import emailjs from 'emailjs-com';
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   minHeight: '100vh',
@@ -94,34 +95,69 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 
 const Contact = () => {
   const theme = useTheme();
+  const form = useRef();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
+    user_name: '',
+    user_email: '',
+    message: ''
   });
+  const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
     severity: 'success',
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // Initialize EmailJS
+  useEffect(() => {
+    emailjs.init("Mtr-S13BfcoqTjEMA");
+  }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    setSnackbar({
-      open: true,
-      message: 'Message sent successfully!',
-      severity: 'success',
-    });
-    setFormData({ name: '', email: '', message: '' });
+    setLoading(true);
+
+    try {
+      const result = await emailjs.sendForm(
+        'service_zjfpwna',        // Your service ID
+        'template_691ix3p',       // Your template ID
+        form.current,
+        'Mtr-S13BfcoqTjEMA'      // Your public key
+      );
+
+      if (result.text === 'OK') {
+        setSnackbar({
+          open: true,
+          message: 'Message sent successfully!',
+          severity: 'success',
+        });
+
+        setFormData({
+          user_name: '',
+          user_email: '',
+          message: ''
+        });
+      } else {
+        throw new Error('Failed to send message');
+      }
+    } catch (error) {
+      console.error('EmailJS Error:', error);
+      setSnackbar({
+        open: true,
+        message: 'Failed to send message. Please try again.',
+        severity: 'error',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbar({ ...snackbar, open: false });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
   };
 
   const containerVariants = {
@@ -188,23 +224,25 @@ const Contact = () => {
                     <Typography variant="h5" gutterBottom color="primary">
                       Send a Message
                     </Typography>
-                    <form onSubmit={handleSubmit}>
+                    <form ref={form} onSubmit={handleSubmit}>
                       <StyledTextField
                         fullWidth
                         label="Name"
-                        name="name"
-                        value={formData.name}
+                        name="user_name"
+                        value={formData.user_name}
                         onChange={handleChange}
                         required
+                        disabled={loading}
                       />
                       <StyledTextField
                         fullWidth
                         label="Email"
-                        name="email"
+                        name="user_email"
                         type="email"
-                        value={formData.email}
+                        value={formData.user_email}
                         onChange={handleChange}
                         required
+                        disabled={loading}
                       />
                       <StyledTextField
                         fullWidth
@@ -215,6 +253,7 @@ const Contact = () => {
                         required
                         multiline
                         rows={4}
+                        disabled={loading}
                       />
                       <Button
                         type="submit"
@@ -222,6 +261,7 @@ const Contact = () => {
                         fullWidth
                         size="large"
                         endIcon={<Send />}
+                        disabled={loading}
                         sx={{
                           mt: 2,
                           background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
@@ -231,7 +271,7 @@ const Contact = () => {
                           },
                         }}
                       >
-                        Send Message
+                        {loading ? 'Sending...' : 'Send Message'}
                       </Button>
                     </form>
                   </Box>
@@ -259,11 +299,11 @@ const Contact = () => {
         <Snackbar
           open={snackbar.open}
           autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         >
           <Alert
-            onClose={handleCloseSnackbar}
+            onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
             severity={snackbar.severity}
             variant="filled"
             sx={{ width: '100%' }}

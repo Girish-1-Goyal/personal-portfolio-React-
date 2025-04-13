@@ -126,7 +126,7 @@ const Profile = () => {
     {
       icon: <CodeIcon />,
       label: 'Codeforces Rating',
-      value: '1782',
+      value: '1867(Expert)',
     },
   ];
 

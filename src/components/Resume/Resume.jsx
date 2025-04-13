@@ -105,9 +105,9 @@ const Resume = () => {
         company: 'Codeforces',
         year: '2025 - Present',
         details: [
-          'Solved 200+ programming problems across different platforms',
-          'Achieved 1873(max) rating on CodeForces',
-          'Regular participant in coding contests',
+          'Solved 1000+ programming problems across different platforms',
+          'Achieved 1867(max) rating on Codeforces',
+          'Regular participant in coding contests on various platfoms.',
           'Teach students about Data Structures and Algorithms',
         ],
       },
