@@ -98,7 +98,7 @@ const CompetitiveProgramming = () => {
     try {
       setLoading(true);
       setError(null);
-      const handle = 'Girish_k_Goyal';
+      const handle = 'epsilon_xd';
       
       // Fetch basic user info and photo first
       const [userInfo, photoUrl] = await Promise.all([
